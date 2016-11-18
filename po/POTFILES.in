@@ -1,0 +1,5 @@
+# List of source files which contain translatable strings.
+
+src/common.h
+src/main.c
+src/threads.c
