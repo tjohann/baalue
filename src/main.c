@@ -1,6 +1,6 @@
 /*
   GPL
-  (c) 2016, thorsten.johannvorderbrueggen@t-online.de
+  (c) 2016-2017, thorsten.johannvorderbrueggen@t-online.de
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -23,8 +23,12 @@
 static char *program_name;
 static sigset_t mask;
 
+static pthread_t tid_signal_handler;
+static pthread_t tid_local_client;
+static pthread_t tid_inet_client;
+
 /* 8101-8114   Unassigned */
-const char mgmt_port[] = "8101";
+const char baalued_port[] = "8111";
 
 static void
 show_some_infos(void)
@@ -38,12 +42,22 @@ __attribute__((noreturn)) usage(int status)
 {
 	putchar('\n');
 	baa_info_msg("Usage: %s [options]              ", program_name);
-	baa_info_msg("Options:                                       ");
-	baa_info_msg("        -h                       show help     ");
-	baa_info_msg("        -s [server name]                       ");
+	baa_info_msg("Options:                                        ");
+	baa_info_msg("        -h                       show help      ");
+	baa_info_msg("        -s [server name]                        ");
+	baa_info_msg("        -c [command]                            ");
+	baa_info_msg("        -l                                      ");
+	baa_info_msg("command:                                        ");
+	baa_info_msg("        ping                     ping device    ");
+	baa_info_msg("        halt                     halt device    ");
+	baa_info_msg("        reboot                   reboot device  ");
 	putchar('\n');
-	baa_info_msg("Examples:                                      ");
-	baa_info_msg("%s -s baalue_master                            ",
+	baa_info_msg("Examples:                                       ");
+	baa_info_msg("%s -s baalue_master  <- connect to baalue_master ",
+		     program_name);
+	baa_info_msg("%s -l  <- connect to the local baalued           ",
+		     program_name);
+	baa_info_msg("%s -c reboot/halt/ping <- cmd for baalued        ",
 		     program_name);
 	putchar('\n');
 
@@ -96,19 +110,64 @@ signal_handler(void *args)
 }
 
 
+void
+send_to_inet_server(char *server_name, char *command)
+{
+	baa_info_msg("server: %s server_name");
+	baa_info_msg("command: %s command");
+
+
+	/*
+
+	int fds = baa_inet_dgram_client(server_name, mgmt_port);
+	if (fds == -1) {
+		baa_error_msg("could not connect to %s", &server_name);
+		usage(EXIT_FAILURE);
+	}
+
+
+	err = baa_ping_device(fds);
+	if (err == -1) {
+		baa_error_msg("could not ping device %s", &server_name);
+		exit(EXIT_FAILURE);
+	}
+
+	baa_info_msg("%s is alive", server_name);
+	*/
+
+}
+
+void
+send_to_local_server(char *command)
+{
+	baa_info_msg("command: %s command");
+}
+
 int main(int argc, char *argv[])
 {
-	pthread_t tid_signal_handler;
-
-	char *server_name = NULL;
+	setlocale(LC_ALL, "");
+	bindtextdomain(PACKAGE, LOCALEDIR);
+	textdomain(PACKAGE);
 
 	baa_set_program_name(&program_name, argv[0]);
 
+	char *server_name = NULL;
+	char *command = NULL;
+	bool connect_to_inet_server = false;
+	bool connect_to_local_server = false;
+
 	int c;
-	while ((c = getopt(argc, argv, "hs:")) != -1) {
+	while ((c = getopt(argc, argv, "hlc:s:")) != -1) {
 		switch (c) {
 		case 's':
+			connect_to_inet_server = true;
 			server_name = optarg;
+			break;
+		case 'c':
+			command = optarg;
+			break;
+		case 'l':
+			connect_to_local_server = true;
 			break;
 		case 'h':
 			usage(EXIT_SUCCESS);
@@ -119,20 +178,14 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	if (server_name == NULL) {
-		baa_error_msg("not enough arguments -> need server name");
-		usage(EXIT_FAILURE);
-	}
-
-	baa_info_msg("server name: %s", server_name);
-
 	int err = atexit(cleanup);
 	if (err != 0)
 		exit(EXIT_FAILURE);
 
-        /*
-	 * signal handling -> a thread for signal handling
-	 */
+	if ((connect_to_inet_server == false) &&
+	    (connect_to_local_server == false))
+		exit(EXIT_FAILURE);
+
 	sigfillset(&mask);
 	err = pthread_sigmask(SIG_BLOCK, &mask, NULL);
 	if (err != 0)
@@ -142,27 +195,21 @@ int main(int argc, char *argv[])
 	if (err != 0)
 		baa_th_error_exit(err, "could not create pthread");
 
-	baa_info_msg("try to connect to daytime server of %s", server_name);
+	if (connect_to_inet_server)
+		send_to_inet_server(server_name, command);
+
+	if (connect_to_local_server)
+		send_to_local_server(command);
 
 	/*
-	 * connect to datagram server
-	 */
-	int fds = baa_inet_dgram_client(server_name, mgmt_port);
-	if (fds == -1) {
-		baa_error_msg("could not connect to %s", &server_name);
-		usage(EXIT_FAILURE);
-	}
+	if (connect_to_inet_server)
+		(void) pthread_join(tid_inet_client, NULL);
 
-	/*
-	 * reboot target device
-	 */
-	err = baa_ping_device(fds);
-	if (err == -1) {
-		baa_error_msg("could not ping device %s", &server_name);
-		exit(EXIT_FAILURE);
-	}
+	if (connect_to_local_server)
+		(void) pthread_join(tid_local_client, NULL);
+	*/
 
-	baa_info_msg("%s is alive", server_name);
+	(void) pthread_join(tid_signal_handler, NULL);
 
 	exit(EXIT_SUCCESS);
 }
