@@ -30,12 +30,6 @@ static pthread_t tid_inet_client;
 /* 8101-8114   Unassigned */
 const char baalued_port[] = "8111";
 
-static void
-show_some_infos(void)
-{
-	baa_show_package_name();
-	baa_show_version_info();
-}
 
 static void
 __attribute__((noreturn)) usage(int status)
@@ -61,7 +55,6 @@ __attribute__((noreturn)) usage(int status)
 		     program_name);
 	putchar('\n');
 
-	show_some_infos();
 	exit(status);
 }
 
@@ -110,11 +103,16 @@ signal_handler(void *args)
 }
 
 
-void
+static int
 send_to_inet_server(char *server_name, char *command)
 {
-	baa_info_msg("server: %s server_name");
-	baa_info_msg("command: %s command");
+	if ((server_name == NULL) || (command == NULL)) {
+		baa_error_msg("server_name or command == NULL");
+		return -1;
+	} else {
+		baa_info_msg("server: %s", server_name );
+		baa_info_msg("command: %s", command );
+	}
 
 
 	/*
@@ -135,9 +133,10 @@ send_to_inet_server(char *server_name, char *command)
 	baa_info_msg("%s is alive", server_name);
 	*/
 
+	return 0;
 }
 
-void
+static void
 send_to_local_server(char *command)
 {
 	baa_info_msg("command: %s command");
@@ -183,8 +182,10 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 
 	if ((connect_to_inet_server == false) &&
-	    (connect_to_local_server == false))
+	    (connect_to_local_server == false)) {
+		baa_info_msg("neither inet nor local server slected -> exit");
 		exit(EXIT_FAILURE);
+	}
 
 	sigfillset(&mask);
 	err = pthread_sigmask(SIG_BLOCK, &mask, NULL);
