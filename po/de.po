@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baalued trunk\n"
 "Report-Msgid-Bugs-To: thorsten.johannvorderbrueggen@t-online.de\n"
-"POT-Creation-Date: 2017-02-25 14:11+0100\n"
+"POT-Creation-Date: 2017-08-11 09:51+0200\n"
 "PO-Revision-Date: 2016-07-18 21:47+0200\n"
 "Last-Translator: tjohann <thorsten.johannvorderbrueggen@t-online.de>\n"
 "Language-Team: German\n"
@@ -17,11 +17,172 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/main.c:72
+#: src/main.c:36
+#, c-format
+msgid "Usage: %s [options]              "
+msgstr ""
+
+#: src/main.c:37
+msgid "Options:                                       "
+msgstr ""
+
+#: src/main.c:38
+msgid "        -h                       show help     "
+msgstr ""
+
+#: src/main.c:39
+msgid "        -s [server name]                       "
+msgstr ""
+
+#: src/main.c:40
+msgid "        -c [command]                           "
+msgstr ""
+
+#: src/main.c:41
+msgid "        -l                                     "
+msgstr ""
+
+#: src/main.c:42
+msgid "command:                                       "
+msgstr ""
+
+#: src/main.c:43
+msgid "        ping                     ping device   "
+msgstr ""
+
+#: src/main.c:44
+msgid "        halt                     halt device   "
+msgstr ""
+
+#: src/main.c:45
+msgid "        reboot                   reboot device "
+msgstr ""
+
+#: src/main.c:47
+msgid "Examples:                                      "
+msgstr ""
+
+#: src/main.c:48
+#, c-format
+msgid "%s -s baalue_master  <- connect to baalue_master"
+msgstr ""
+
+#: src/main.c:50
+#, c-format
+msgid "%s -l  <- connect to the local baalued          "
+msgstr ""
+
+#: src/main.c:52
+#, c-format
+msgid "%s -c reboot/halt/ping <- supported commands    "
+msgstr ""
+
+#: src/main.c:54
+#, c-format
+msgid "%s -c halt -s baalue-01 <- halt node baalue-01  "
+msgstr ""
+
+#: src/main.c:65
 msgid "finalize cleanup"
 msgstr ""
 
-#: src/main.c:75
+#: src/main.c:68
 #, c-format
 msgid "cheers %s"
+msgstr ""
+
+#: src/main.c:77
+msgid "could not detach signal handler -> ignore it"
+msgstr ""
+
+#: src/main.c:84
+#, c-format
+msgid "sigwait() != 0 in %s"
+msgstr ""
+
+#: src/main.c:88
+#, c-format
+msgid "catched signal \"%s\" (%d) -> exit now"
+msgstr ""
+
+#: src/main.c:93
+#, c-format
+msgid "signal \"%s\" (%d) -> ignore it"
+msgstr ""
+
+#: src/main.c:97
+#, c-format
+msgid "unhandled signal \"%s\" (%d)"
+msgstr ""
+
+#: src/main.c:110
+msgid "server_name or command == NULL"
+msgstr ""
+
+#: src/main.c:113
+#, c-format
+msgid "server: %s"
+msgstr ""
+
+#: src/main.c:114
+#, c-format
+msgid "command: %s"
+msgstr ""
+
+#: src/main.c:120
+#, c-format
+msgid "could not connect to %s"
+msgstr ""
+
+#: src/main.c:127
+msgid "reboot"
+msgstr ""
+
+#: src/main.c:131
+#, c-format
+msgid "could not reboot device %s"
+msgstr ""
+
+#: src/main.c:139
+msgid "halt"
+msgstr ""
+
+#: src/main.c:143
+#, c-format
+msgid "could not halt device %s"
+msgstr ""
+
+#: src/main.c:151
+msgid "ping"
+msgstr ""
+
+#: src/main.c:155
+#, c-format
+msgid "could not ping device %s"
+msgstr ""
+
+#: src/main.c:161
+#, c-format
+msgid "%s seems to be alive"
+msgstr ""
+
+#: src/main.c:169
+#, c-format
+msgid "command: %s command"
+msgstr ""
+
+#: src/main.c:202
+msgid "ERROR: no valid argument"
+msgstr ""
+
+#: src/main.c:213
+msgid "neither inet nor local server selected -> exit"
+msgstr ""
+
+#: src/main.c:220
+msgid "could not set sigmask"
+msgstr ""
+
+#: src/main.c:224
+msgid "could not create pthread"
 msgstr ""
