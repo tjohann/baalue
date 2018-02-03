@@ -3,6 +3,8 @@
 #
 
 
+2018-02-03 -> some smaller fixes
+
 2017-08-10 -> implement reboot/halt/ping for remote nodes
 
 2016-11-18 -> initial checkin based on libbaalue/examples/udp_mgmt_client.c

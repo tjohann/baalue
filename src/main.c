@@ -1,6 +1,6 @@
 /*
   GPL
-  (c) 2016-2017, thorsten.johannvorderbrueggen@t-online.de
+  (c) 2016-2018, thorsten.johannvorderbrueggen@t-online.de
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -86,16 +86,16 @@ signal_handler(void *args)
 		switch(sig) {
 		case SIGTERM:
 			baa_info_msg(_("catched signal \"%s\" (%d) -> exit now"),
-				     strsignal(sig), sig);
+				strsignal(sig), sig);
 			exit(EXIT_SUCCESS);
 			break;
 		case SIGHUP:
 			baa_info_msg(_("signal \"%s\" (%d) -> ignore it"),
-				     strsignal(sig), sig);
+				strsignal(sig), sig);
 			break;
 		default:
 			baa_error_msg(_("unhandled signal \"%s\" (%d)"),
-				      strsignal(sig), sig);
+				strsignal(sig), sig);
 		}
 	}
 
@@ -114,7 +114,6 @@ send_to_inet_server(char *server_name, char *command)
 		baa_info_msg(_("command: %s"), command);
 	}
 
-
 	int fds = baa_inet_dgram_client(server_name, baalued_port);
 	if (fds == -1) {
 		baa_error_msg(_("could not connect to %s"), &server_name);
@@ -129,7 +128,7 @@ send_to_inet_server(char *server_name, char *command)
 		err = baa_reboot_device(fds);
 		if (err == -1) {
 			baa_error_msg(_("could not reboot device %s"),
-				&server_name);
+				server_name);
 			return -1;
 		}
 	}
@@ -141,7 +140,7 @@ send_to_inet_server(char *server_name, char *command)
 		err = baa_halt_device(fds);
 		if (err == -1) {
 			baa_error_msg(_("could not halt device %s"),
-				&server_name);
+				server_name);
 			return -1;
 		}
 	}
@@ -153,7 +152,7 @@ send_to_inet_server(char *server_name, char *command)
 		err = baa_ping_device(fds);
 		if (err == -1) {
 			baa_error_msg(_("could not ping device %s"),
-				&server_name);
+				server_name);
 			return -1;
 		}
 	}
