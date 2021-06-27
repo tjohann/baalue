@@ -2,6 +2,9 @@
 # some news ... see also TODO for hints
 #
 
+
+2021-06-27 -> pull stuff from ambient_tracker repo (lcd + poweroff + gpio + ...)
+
 2020-08-02 -> update gettext.h
 
 2018-02-03 -> some smaller fixes
